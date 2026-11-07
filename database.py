@@ -31,12 +31,21 @@ connection.execute("""
 
 connection.commit()
 
+# Create conversation summaries table
+connection.execute("""
+    CREATE TABLE IF NOT EXISTS conversation_summaries (
+        session_id TEXT PRIMARY KEY,
+        summary TEXT NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (session_id) REFERENCES sessions(session_id)
+    )
+""")
+
+connection.commit()
+
 
 # Create a new session if it doesn't already exist
-
-
 def create_session(session_id):
-
     result = connection.execute(
         "SELECT * FROM sessions WHERE session_id = ?", (session_id,)
     ).fetchone()
@@ -60,6 +69,7 @@ def create_session(session_id):
         return False
 
 
+# Save a conversation message
 def save_message(session_id, role, content):
     connection.execute(
         """
@@ -72,6 +82,38 @@ def save_message(session_id, role, content):
     connection.commit()
 
 
+# Save or update a conversation summary
+def save_summary(session_id, summary):
+    connection.execute(
+        """
+        INSERT INTO conversation_summaries (session_id, summary)
+        VALUES (?, ?)
+        ON CONFLICT(session_id)
+        DO UPDATE SET
+            summary = excluded.summary,
+            updated_at = CURRENT_TIMESTAMP
+        """,
+        (session_id, summary),
+    )
+
+    connection.commit()
+
+
+# Retrieve a conversation summary
+def get_summary(session_id):
+    result = connection.execute(
+        """
+        SELECT summary
+        FROM conversation_summaries
+        WHERE session_id = ?
+        """,
+        (session_id,),
+    ).fetchone()
+
+    return result[0] if result else None
+
+
+# Retrieve conversation messages
 def get_messages(session_id):
     result = connection.execute(
         """
@@ -86,6 +128,7 @@ def get_messages(session_id):
     return result
 
 
+# Reconstruct LangChain conversation history
 def load_conversation_history(session_id):
     messages = get_messages(session_id)
 
@@ -102,3 +145,17 @@ def load_conversation_history(session_id):
             conversation_history.append(SystemMessage(content=content))
 
     return conversation_history
+
+
+if __name__ == "__main__":
+    test_session = "summary_test"
+
+    create_session(test_session)
+
+    save_summary(test_session, "Alex is learning Python.")
+
+    print("First summary:", get_summary(test_session))
+
+    save_summary(test_session, "Alex is learning Python and OOP.")
+
+    print("Updated summary:", get_summary(test_session))

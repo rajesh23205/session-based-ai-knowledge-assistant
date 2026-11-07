@@ -1,0 +1,6 @@
+Machine learning is a branch of artificial intelligence.
+It allows computers to learn patterns from data.
+Supervised learning trains models using labeled examples.
+Unsupervised learning finds patterns in unlabeled data.
+Machine learning is used in image recognition, prediction, and recommendation systems.
+Deep learning is a subset of machine learning that uses neural networks.

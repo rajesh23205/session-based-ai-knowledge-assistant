@@ -18,3 +18,5 @@ chroma_db/
 
 # PowerShell module analysis cache
 Microsoft/Windows/PowerShell/ModuleAnalysisCache
+
+conversation_history.db
