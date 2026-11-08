@@ -89,10 +89,17 @@ while True:
 
     if result["sources"]:
         for index, source in enumerate(result["sources"], start=1):
-            print(f"\nSource: {source['source']}")
-            print(f"Result number: {index}")
+            print(f"\nSource {index}:")
+            print(f"Document: {source['document_name']}")
+
+            if source["page_number"] is not None:
+                print(f"Page: {source['page_number']}")
+
+            print(f"Chunk ID: {source['chunk_id']}")
+            print(f"Document version: {source['document_version']}")
             print(f"Distance score: {source['distance']:.4f}")
             print(f"Content: {source['content']}")
+
     else:
         print("No relevant document sources found.")
 

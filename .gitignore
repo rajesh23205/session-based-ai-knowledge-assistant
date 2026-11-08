@@ -20,3 +20,6 @@ chroma_db/
 Microsoft/Windows/PowerShell/ModuleAnalysisCache
 
 conversation_history.db
+
+*.db
+*.sqlite

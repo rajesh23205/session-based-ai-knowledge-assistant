@@ -6,7 +6,7 @@ A Python-based AI knowledge assistant that combines conversational memory, sessi
 
 ### 1. Conversation History
 - Maintains conversation history using LangChain messages.
-- Supports HumanMessage, AIMessage, and SystemMessage.
+- Supports `HumanMessage`, `AIMessage`, and `SystemMessage`.
 - Uses conversation history to understand follow-up questions.
 
 ### 2. Session Management
@@ -20,7 +20,7 @@ A Python-based AI knowledge assistant that combines conversational memory, sessi
 - Stores conversation summaries separately from individual messages.
 
 ### 4. Context-Aware RAG
-- Loads documents from the documents directory.
+- Loads TXT and PDF documents from the documents directory.
 - Splits documents into smaller chunks.
 - Generates embeddings using OpenAI embeddings.
 - Stores and retrieves document chunks using ChromaDB.
@@ -40,6 +40,22 @@ A Python-based AI knowledge assistant that combines conversational memory, sessi
 - Saves updated summaries in SQLite.
 - Uses conversation summaries and recent history to maintain continuity.
 
+### 6. Sources and Reliability
+- Tracks document metadata, including document ID, source, file type, version, and content hash.
+- Preserves PDF page numbers in document chunks.
+- Provides source attribution with retrieved answers.
+- Validates generated answers against retrieved document content.
+- Identifies supported, partially supported, and unsupported claims.
+- Corrects partially supported answers to retain only supported information.
+- Detects ambiguous follow-up questions and requests clarification before retrieval.
+- Handles conflicting information by identifying the claims made by individual sources.
+- Uses similarity thresholds to filter irrelevant retrieval results.
+- Detects document content changes and maintains document versions.
+- Identifies deleted documents and removes outdated chunks.
+- Verifies newly indexed chunks before deleting outdated records.
+- Protects existing indexed data when document processing produces no chunks.
+- Includes tests for supported, unsupported, partially supported, ambiguous, and conflicting questions.
+
 ## Technologies Used
 
 - Python
@@ -51,6 +67,7 @@ A Python-based AI knowledge assistant that combines conversational memory, sessi
 - NumPy
 - tiktoken
 - python-dotenv
+- pypdf
 
 ## Project Structure
 
@@ -58,7 +75,8 @@ A Python-based AI knowledge assistant that combines conversational memory, sessi
 session-based-ai-knowledge-assistant/
 │
 ├── documents/
-│   └── machine_learning.txt
+│   ├── machine_learning.txt
+│   └── machine_learning_guide.pdf
 │
 ├── chroma_db/
 │
@@ -114,30 +132,4 @@ Create a `.env` file in the project root:
 OPENAI_API_KEY=your_openai_api_key
 ```
 
-Replace the placeholder with your OpenAI API key.
-
-## Run the Application
-
-```bash
-python message_demo.py
-```
-
-Enter a session ID to start a new conversation or resume an existing session.
-
-Type `exit` to end the conversation.
-
-## Project Roadmap
-
-- [x] Phase 1: Conversation History
-- [x] Phase 2: Session Management
-- [x] Phase 3: Persistent Conversation History
-- [x] Phase 4: Context-Aware RAG
-- [x] Phase 5: Conversation Context Management
-- [ ] Phase 6: Sources and Reliability
-- [ ] Phase 7: Chat UI and Backend
-- [ ] Phase 8: Testing and Improvements
-
-## Learning Objective
-
-This project is being developed step by step to understand how AI-powered knowledge assistants work, including conversational memory, session isolation, persistent storage, embeddings, vector search, RAG, token management, and conversation summarization.
-```
+Replace the placeholder with your Open
