@@ -1,73 +1,48 @@
 # Session-Based AI Knowledge Assistant
 
-A Python-based AI knowledge assistant that combines conversational memory, session management, persistent storage, and Retrieval-Augmented Generation (RAG) to provide context-aware answers from documents.
+An AI-powered knowledge assistant built with Python, FastAPI, React, TypeScript, SQLite, ChromaDB, LangChain, and OpenAI.
+
+The application allows users to maintain multiple conversation sessions and ask questions grounded in uploaded knowledge-base documents.
 
 ## Features
 
-### 1. Conversation History
-- Maintains conversation history using LangChain messages.
-- Supports `HumanMessage`, `AIMessage`, and `SystemMessage`.
-- Uses conversation history to understand follow-up questions.
+- Session-based conversations
+- Persistent conversation history using SQLite
+- Context-aware question rewriting
+- Conversation summarization and memory management
+- Document-based Retrieval-Augmented Generation (RAG)
+- PDF and TXT document processing
+- Text chunking and OpenAI embeddings
+- Semantic similarity search using ChromaDB
+- Top-K retrieval with similarity filtering
+- Source attribution with document and page metadata
+- Document version tracking and synchronization
+- Grounded answer generation and claim validation
+- Unsupported-question handling and clarification
+- FastAPI backend
+- React and TypeScript frontend
+- Automated backend API and source-persistence tests
 
-### 2. Session Management
-- Supports multiple independent conversation sessions.
-- Maintains separate conversation history for each session.
-- Allows users to resume existing sessions.
+## Tech Stack
 
-### 3. Persistent Conversation History
-- Uses SQLite to store conversation messages.
-- Restores conversation history when an existing session resumes.
-- Stores conversation summaries separately from individual messages.
-
-### 4. Context-Aware RAG
-- Loads TXT and PDF documents from the documents directory.
-- Splits documents into smaller chunks.
-- Generates embeddings using OpenAI embeddings.
-- Stores and retrieves document chunks using ChromaDB.
-- Uses similarity search to retrieve relevant information.
-- Rewrites follow-up questions into standalone questions.
-- Generates answers grounded in retrieved document context.
-- Returns source information with answers.
-- Handles questions when relevant information is unavailable.
-
-### 5. Conversation Context Management
-- Counts tokens using `tiktoken`.
-- Applies a configurable conversation history token budget.
-- Summarizes older conversation turns automatically.
-- Updates existing summaries incrementally.
-- Retains the latest three complete conversation turns.
-- Preserves the previous summary if summarization fails.
-- Saves updated summaries in SQLite.
-- Uses conversation summaries and recent history to maintain continuity.
-
-### 6. Sources and Reliability
-- Tracks document metadata, including document ID, source, file type, version, and content hash.
-- Preserves PDF page numbers in document chunks.
-- Provides source attribution with retrieved answers.
-- Validates generated answers against retrieved document content.
-- Identifies supported, partially supported, and unsupported claims.
-- Corrects partially supported answers to retain only supported information.
-- Detects ambiguous follow-up questions and requests clarification before retrieval.
-- Handles conflicting information by identifying the claims made by individual sources.
-- Uses similarity thresholds to filter irrelevant retrieval results.
-- Detects document content changes and maintains document versions.
-- Identifies deleted documents and removes outdated chunks.
-- Verifies newly indexed chunks before deleting outdated records.
-- Protects existing indexed data when document processing produces no chunks.
-- Includes tests for supported, unsupported, partially supported, ambiguous, and conflicting questions.
-
-## Technologies Used
-
-- Python
+**Backend**
+- Python 3.13
+- FastAPI
 - LangChain
-- OpenAI API
-- OpenAI Embeddings (`text-embedding-3-small`)
+- OpenAI
 - ChromaDB
 - SQLite
-- NumPy
-- tiktoken
-- python-dotenv
-- pypdf
+
+**Frontend**
+- React
+- TypeScript
+- Vite
+- CSS
+
+**Testing**
+- Pytest
+- HTTPX
+- FastAPI TestClient
 
 ## Project Structure
 
@@ -75,22 +50,21 @@ A Python-based AI knowledge assistant that combines conversational memory, sessi
 session-based-ai-knowledge-assistant/
 │
 ├── documents/
-│   ├── machine_learning.txt
-│   └── machine_learning_guide.pdf
+├── frontend/
+├── tests/
 │
-├── chroma_db/
-│
-├── message_demo.py
-├── database.py
+├── api.py
+├── chat_service.py
 ├── context_manager.py
+├── database.py
+├── rag_answer.py
 ├── search_documents.py
 ├── vector_store.py
-├── rag_answer.py
-├── test_rag.py
-├── token_demo.py
+├── message_demo.py
 │
 ├── requirements.txt
-├── .env
+├── .env.example
+├── .gitignore
 └── README.md
 ```
 
@@ -107,24 +81,22 @@ cd session-based-ai-knowledge-assistant
 ### 2. Create a virtual environment
 
 ```bash
-python -m venv .venv
+py -3.13 -m venv .venv
 ```
 
-### 3. Activate the virtual environment
-
-Windows PowerShell:
+Activate it on Windows:
 
 ```powershell
 .venv\Scripts\Activate.ps1
 ```
 
-### 4. Install dependencies
+### 3. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 5. Configure environment variables
+### 4. Configure environment variables
 
 Create a `.env` file in the project root:
 
@@ -132,4 +104,57 @@ Create a `.env` file in the project root:
 OPENAI_API_KEY=your_openai_api_key
 ```
 
-Replace the placeholder with your Open
+### 5. Start the backend
+
+```bash
+uvicorn api:app --reload
+```
+
+Backend: http://127.0.0.1:8000
+
+API documentation: http://127.0.0.1:8000/docs
+
+### 6. Start the frontend
+
+Open another terminal:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Frontend: http://localhost:5173
+
+## Running Tests
+
+From the project root:
+
+```bash
+python -m pytest -v
+```
+
+## Architecture Overview
+
+1. Users create and manage conversation sessions.
+2. Questions are sent to the FastAPI backend.
+3. Conversation history and summaries provide contextual information.
+4. Questions are rewritten when necessary to make them independently searchable.
+5. ChromaDB retrieves relevant document chunks using semantic similarity.
+6. The LLM generates an answer grounded in retrieved documents.
+7. Answer claims are validated against retrieved context.
+8. Answers and source metadata are persisted in SQLite.
+9. The frontend displays answers and their supporting sources.
+
+## Future Improvements
+
+- User authentication and authorization
+- Document upload interface
+- Streaming responses
+- Advanced LangGraph workflows
+- Evaluation and observability
+- Production deployment
+
+## Author
+
+Built as a hands-on project to explore RAG systems, conversational memory, AI agents, and full-stack AI application development.

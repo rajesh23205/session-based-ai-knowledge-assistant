@@ -1,25 +1,38 @@
-# Environment variables and secrets
-.env
-.env.*
 
-# Python virtual environment
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
 .venv/
 venv/
 
-# Python generated files
-__pycache__/
-*.py[cod]
+# Environment variables
+.env
+.env.*
 
-# Local databases
-chroma_db/
-
-# IDE settings
-.vscode/
-
-# PowerShell module analysis cache
-Microsoft/Windows/PowerShell/ModuleAnalysisCache
-
-conversation_history.db
-
+# SQLite databases
 *.db
 *.sqlite
+*.sqlite3
+
+# ChromaDB
+chroma_db/
+.chroma/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
